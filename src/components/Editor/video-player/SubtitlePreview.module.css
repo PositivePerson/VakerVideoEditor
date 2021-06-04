@@ -1,0 +1,19 @@
+.smoothHighlightParent {
+    position: relative;
+    white-space: nowrap;
+  }
+  
+  .smoothHighlightChild {
+    position: absolute;
+    left: 0;
+    top: 0;
+    line-height: initial;
+    overflow: hidden;
+    height: 100%;
+    animation: fill-text;
+  }
+  
+  @keyframes fill-text {
+    from { width: 0 }
+    to { width: 100% }
+  }
