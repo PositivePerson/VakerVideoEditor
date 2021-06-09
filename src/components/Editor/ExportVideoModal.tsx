@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { Button } from '../ui/Button';
 import Checkbox from '../ui/Form/Checkbox';
 import EditorSwitch from '../ui/Form/EditorSwitch'
-import RadioButton from '../ui/Form/RadioButton';
+import RadioButton from '../ui/Form/Radiobutton';
 import Modal from '../ui/Modal'
 import VideoPlayer from './video-player/VideoPlayer';
 
