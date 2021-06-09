@@ -5,9 +5,12 @@ import { RootState } from '~/redux/rootStore';
 import { IEditorKaraokeStyles, IEditorTextStyles } from '~/redux/editor/editor.reducer';
 import getCssPropertiesFromStyleConfiguration from '~/components/Editor/style-editor/getCssPropertiesFromStyleConfiguration';
 import styles from './SubtitlePreview.module.css';
+import { autobind } from 'core-decorators';
 
 interface ISubtitlePreviewProps {
     start: number;
+    setCurrentLineStart: ( x: number ) => void;
+    setLineProgress: ( x: number ) => void;
 
     // Injected props
     subtitles: NodeList;
@@ -15,11 +18,21 @@ interface ISubtitlePreviewProps {
     karaokeStyle?: IEditorKaraokeStyles;
 }
 
-class SubtitlePreview extends React.PureComponent<ISubtitlePreviewProps> {
+interface ISubtitlePreviewState {
+    assignedIds: number;
+}
+
+class SubtitlePreview extends React.PureComponent<ISubtitlePreviewProps, ISubtitlePreviewState> {
 
     public static defaultProps: Partial<ISubtitlePreviewProps> = {
         subtitles: [],
     }
+
+    public readonly state: ISubtitlePreviewState = {
+        assignedIds: 0,
+    }
+
+    num = 0;
 
     public render(): React.ReactNode {
 
@@ -29,6 +42,10 @@ class SubtitlePreview extends React.PureComponent<ISubtitlePreviewProps> {
             subtitleStyle,
             karaokeStyle,
         } = this.props;
+
+        // const {
+        //     assignedIds,
+        // } = this.state;
 
         // Playing time is in seconds, cue time in milliseconds
         const startTimeMilliseconds = start * 1000;
@@ -52,6 +69,15 @@ class SubtitlePreview extends React.PureComponent<ISubtitlePreviewProps> {
         );
     }
 
+    // Experimental
+    // @autobind
+    // private increaseIdState(num: number) {
+    //     this.setState({
+    //         assignedIds: num,
+    //     });
+    //     console.log(typeof(this.state.assignedIds), isNaN(this.state.assignedIds), this.state.assignedIds, num)
+    // }
+
     private getCurrentSubtitleLine(subtitles: NodeList, startTime: number): NodeCue | null {
 
         for (const node of subtitles) {
@@ -69,7 +95,17 @@ class SubtitlePreview extends React.PureComponent<ISubtitlePreviewProps> {
         return null;
     }
 
-    private getKaraokeStyledText(subtitleNode: NodeCue, startTime: number, fontColor: string): Array<string | ReactElement> {
+    @autobind
+    private updatePropsCurrentLineStart(lineStart: number) {
+        this.props.setCurrentLineStart(lineStart);
+    }
+
+    @autobind
+    private updatePropsLineProgress(lineProgress: number) {
+        this.props.setLineProgress(lineProgress);
+    }
+
+    public getKaraokeStyledText(subtitleNode: NodeCue, startTime: number, fontColor: string): Array<string | ReactElement> {
 
         const words: Array<string | ReactElement> = subtitleNode.data.text
             .split(' ');
@@ -78,10 +114,13 @@ class SubtitlePreview extends React.PureComponent<ISubtitlePreviewProps> {
         // How long is the current line already shown
         const currentSubtitleLinePlayTime = Math.max(startTime - subtitleNode.data.start, 0);
 
+        this.updatePropsCurrentLineStart(subtitleNode.data.start);
+        this.updatePropsLineProgress(currentSubtitleLinePlayTime);
+        
         // Calculate how long each word will be highlighted
         const subtitleDuration = subtitleNode.data.end - subtitleNode.data.start;
         const highlightDuration = subtitleDuration / amountWords;
-
+        
         // Calculate the current highlighted index based on the playtime
         const highlightedIndex = Math.max(Math.floor(currentSubtitleLinePlayTime / highlightDuration) - 1, 0);
 
@@ -113,12 +152,17 @@ class SubtitlePreview extends React.PureComponent<ISubtitlePreviewProps> {
                         style={{
                             color: fontColor,
                         }}
+                        data-id={index}
                     >
                         {words[index]}
                     </span>
                 </>
             );
+            // this.increaseIdState(highlightedIndex, this.state);
         }
+
+        // Experimental
+        // this.increaseIdState(amountWords);
 
         // Add back whitespace
         return words.map(word => <>{word} </>);

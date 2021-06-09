@@ -102,6 +102,8 @@ interface IVideoPlayerProps {
     videoUrl: string;
     videoPlaying: boolean;
     setVideoPlaying: ( x: boolean ) => void;
+    setCurrentLineStart: ( x: number ) => void;
+    setLineProgress: ( x: number ) => void;
 
     // Injected props
     currentVideoTranslation: IVideoTranslation;
@@ -159,6 +161,8 @@ class VideoPlayer extends Component<IVideoPlayerProps, IVideoPlayerState> {
 
         const {
             videoUrl,
+            setCurrentLineStart,
+            setLineProgress,
             subtitles,
             progressBarConfiguration,
             logo,
@@ -251,6 +255,8 @@ class VideoPlayer extends Component<IVideoPlayerProps, IVideoPlayerState> {
                         <div className="absolute w-10/12 transform -translate-x-1/2 bottom-[20px] left-1/2">
                             <SubtitlePreview
                                 start={playedSeconds}
+                                setCurrentLineStart={setCurrentLineStart}
+                                setLineProgress={setLineProgress}
                             />
                         </div>
                     )}

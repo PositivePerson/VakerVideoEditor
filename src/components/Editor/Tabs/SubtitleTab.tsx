@@ -12,6 +12,8 @@ import { FaCheck, FaPlus } from 'react-icons/fa';
 
 interface Props {
     setVideoPlaying: ( x: boolean ) => void;
+    currentLineStart: number;
+    lineProgress: number;
 }
 
 const SubtitleEditor: FC<Props> = (props) => {
@@ -29,7 +31,9 @@ const SubtitleEditor: FC<Props> = (props) => {
     );
 
     const {
-        setVideoPlaying
+        currentLineStart,
+        lineProgress,
+        setVideoPlaying,
     } = props;
 
     useEffect(() => {
@@ -49,6 +53,7 @@ const SubtitleEditor: FC<Props> = (props) => {
         }
 
         setList(finishedList);
+        console.log("finishedList: ", finishedList)
 
         dispatch(setSubtitles(finishedList));
     }, [list.length < 1]);
@@ -112,7 +117,7 @@ const SubtitleEditor: FC<Props> = (props) => {
         <div className="p-2 mt-5 min-h-96 2xl:grid 2xl:grid-cols-2 gap-6">
             <div
                 className={`
-                    w-full h-full shadow-md rounded-xl bg-bg-3 py-6 px-6
+                    w-full max-w-full h-full max-h-80 overflow-y-scroll shadow-md rounded-xl bg-red-400 bg-bg-3 py-6 px-6
                     ${hideLines && 'hideLines'}
                 `}
             >
@@ -122,6 +127,8 @@ const SubtitleEditor: FC<Props> = (props) => {
                         setList={setList}
                         hideLines={hideLines}
                         onChangeWords={onChangeWords}
+                        currentLineStart={currentLineStart}
+                        lineProgress={lineProgress}
                         setVideoPlaying={setVideoPlaying}
                     />
                 )}
