@@ -29,6 +29,8 @@ const Editor: FunctionComponent = () => {
     const [isSRTModalOpen, setIsSRTModalOpen] = useState(false)
     const [isExportModalOpen, setIsExportModalOpen] = useState(false)
     const [videoPlaying, setVideoPlaying] = useState(false)
+    const [currentLineStart, setCurrentLineStart] = useState(0);
+    const [lineProgress, setLineProgress] = useState(0);
 
     const [isModalOpen, setIsModalOpen] = useState<{
         state: boolean;
@@ -62,7 +64,7 @@ const Editor: FunctionComponent = () => {
             key: 'SUBTITLE',
             title: 'subtitles',
             icon: "/assets/editor/subtitle-panel.svg",
-            view: <SubtitleEditor setVideoPlaying={setVideoPlaying}/>,
+            view: <SubtitleEditor currentLineStart={currentLineStart} lineProgress={lineProgress} setVideoPlaying={setVideoPlaying}/>,
         },
         {
             key: 'STYLE',
@@ -97,6 +99,8 @@ const Editor: FunctionComponent = () => {
                                 videoUrl={videoUrl}
                                 videoPlaying={videoPlaying}
                                 setVideoPlaying={setVideoPlaying}
+                                setCurrentLineStart={setCurrentLineStart}
+                                setLineProgress={setLineProgress}
                             />
                         </div>
                     <div className="hidden shadow-sm place-self-center lg:inline-block w-5 lg:col-span-1 bg-white h-full" />
