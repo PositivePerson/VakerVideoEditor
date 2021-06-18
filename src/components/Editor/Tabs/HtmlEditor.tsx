@@ -6,7 +6,7 @@ const useElementOnScreen = (options: object, containerRef: React.MutableRefObjec
     // const containerRef = useRef(null)
     const [isInView, setIsInView] = useState(false)
 
-    const callbackFunction = (entries: [any]) => {
+    const callbackFunction = (entries: any) => {
         const [entry] = entries;
         setIsInView(entry.isIntersecting);
     }
