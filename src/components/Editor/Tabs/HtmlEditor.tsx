@@ -1,4 +1,4 @@
-import React, { createRef, FC, useEffect, useRef, useState } from 'react';
+import React, { createRef, FC, MutableRefObject, useEffect, useRef, useState } from 'react';
 
 import { ReactSortable } from 'react-sortablejs';
 
@@ -39,11 +39,10 @@ interface Props {
 const HtmlEditor: FC<Props> = ({ list, setList, hideLines, onChangeWords, currentLineStart, lineProgress, setVideoPlaying, textFieldRef, setBlink }) => {
 
     const [currentWordId, setCurrentWordId] = useState(0);
-    const [savedOffsetTop, setSavedOffsetTop] = useState(0);
     const [isVisible, setIsVisible] = useState(true);
 
     const rootRef = createRef<HTMLDivElement>();
-    const currentWordRef = useRef({
+    const currentWordRef = useRef<any>({
         current: {
             offsetLeft: 0,
             offsetTop: 0,
@@ -109,19 +108,6 @@ const HtmlEditor: FC<Props> = ({ list, setList, hideLines, onChangeWords, curren
             )
         }
     }, [currentWordId])
-
-    // Blink helper-box opacity
-    // useEffect(() => {
-    //     console.log("ref offsetLeft: ", currentWordRef.current.offsetLeft)
-    //     const topOffset = currentWordRef.current.offsetTop;
-    //     if (savedOffsetTop !== topOffset) {
-    //         setIsVisible(false);
-    //         setTimeout(() => {
-    //             setIsVisible(true);
-    //         }, 10)
-    //     };
-    //     setSavedOffsetTop(topOffset);
-    // }, [currentWordId])
 
     return (
         <div
