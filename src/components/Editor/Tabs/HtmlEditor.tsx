@@ -76,7 +76,7 @@ const HtmlEditor: FC<Props> = ({ list, setList, hideLines, onChangeWords, curren
     const handleSortableChange = () => onChangeWords(rootRef.current?.innerText.split(/[\n\r]/g) ?? []);
 
     useEffect(() => {
-        console.log("HTMLEditor ref width: ", rootRef.current.getBoundingClientRect().width);
+        console.log("HTMLEditor ref width: ", rootRef.current?.getBoundingClientRect().width);
         // console.log("Current moment in ms: ", currentLineStart + lineProgress);
         console.log("Subtitles full duration in ms: ", (list[list.length - 1].Duration + list[list.length - 1].Offset) / 1000);
     }, [])
