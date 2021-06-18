@@ -1,4 +1,4 @@
-import React, { FC, MouseEvent, useEffect, useState } from 'react';
+import React, { FC, MouseEvent, useEffect, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Switch } from '@headlessui/react';
 import HtmlEditor from './HtmlEditor';
@@ -11,7 +11,7 @@ import EditorSwitch from '~/components/ui/Form/EditorSwitch';
 import { FaCheck, FaPlus } from 'react-icons/fa';
 
 interface Props {
-    setVideoPlaying: ( x: boolean ) => void;
+    setVideoPlaying: (x: boolean) => void;
     currentLineStart: number;
     lineProgress: number;
 }
@@ -23,6 +23,9 @@ const SubtitleEditor: FC<Props> = (props) => {
     const [hideLines, setHideLines] = useState(false);
     const [replaceWord, setReplaceWord] = useState('');
     const [replace, setReplace] = useState('');
+    const [blink, setBlink] = useState(false);
+
+    const textFieldRef = useRef(null);
 
     const dispatch = useDispatch();
 
@@ -117,9 +120,10 @@ const SubtitleEditor: FC<Props> = (props) => {
         <div className="p-2 mt-5 min-h-96 2xl:grid 2xl:grid-cols-2 gap-6">
             <div
                 className={`
-                    w-full max-w-full h-full max-h-80 overflow-y-scroll shadow-md rounded-xl bg-red-400 bg-bg-3 py-6 px-6
+                    w-full max-w-full h-full max-h-80 overflow-y-scroll shadow-md rounded-xl transition-colors ${blink ? 'bg-red-400' : 'bg-bg-3'} py-6 px-6
                     ${hideLines && 'hideLines'}
                 `}
+                ref={textFieldRef}
             >
                 {list && list.length > 0 && (
                     <HtmlEditor
@@ -130,6 +134,8 @@ const SubtitleEditor: FC<Props> = (props) => {
                         currentLineStart={currentLineStart}
                         lineProgress={lineProgress}
                         setVideoPlaying={setVideoPlaying}
+                        textFieldRef={textFieldRef}
+                        setBlink={setBlink}
                     />
                 )}
             </div>
@@ -162,7 +168,7 @@ const SubtitleEditor: FC<Props> = (props) => {
                                     value={replace}
                                 />
                             </div>
-                            <div  className="col-span-1 justify-self-center">
+                            <div className="col-span-1 justify-self-center">
                                 <button
                                     className="block self-end p-2 text-font-icon bg-white rounded hover:bg-gray-100 hover:text-gray-400 shadow-sm focus:outline-none"
                                     onClick={handleReplaceWord}
@@ -170,13 +176,13 @@ const SubtitleEditor: FC<Props> = (props) => {
                                     <FaCheck size={20} />
                                 </button>
                             </div>
-                            
+
                         </div>
 
 
                         <div className="grid grid-cols-4 items-center">
                             <label className="text-font-2 font-extrabold block col">Add a new field</label>
-                            <div  className="justify-self-center">
+                            <div className="justify-self-center">
                                 <div className="border-r-4 bg-white border-font-1 p-2 border-l-4 text-sm text-font-2">Example</div>
                             </div>
                             <div className="justify-self-center">
@@ -187,9 +193,9 @@ const SubtitleEditor: FC<Props> = (props) => {
                                     <FaPlus size={20} />
                                 </button>
                             </div>
-                            
+
                         </div>
-                       
+
 
                         <div className="grid grid-cols-4 items-center">
                             <label htmlFor="turnOffLines" className="pr-4 text-font-2 font-extrabold block">Turn off the lines</label>
