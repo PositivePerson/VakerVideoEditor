@@ -2,7 +2,7 @@ import React, { createRef, FC, useEffect, useRef, useState } from 'react';
 
 import { ReactSortable } from 'react-sortablejs';
 
-const useElementOnScreen = (options: object, containerRef: React.MutableRefObject<{ current: { offsetLeft: number; offsetTop: number; offsetWidth: number; }; }>) => {
+const useElementOnScreen = (options: object, containerRef: Element) => {
     // const containerRef = useRef(null)
     const [isInView, setIsInView] = useState(false)
 
