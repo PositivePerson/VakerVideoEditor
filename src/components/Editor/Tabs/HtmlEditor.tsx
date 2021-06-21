@@ -2,27 +2,27 @@ import React, { createRef, FC, MutableRefObject, useEffect, useRef, useState } f
 
 import { ReactSortable } from 'react-sortablejs';
 
-const useElementOnScreen = (options: object, containerRef: any) => {
-    // const containerRef = useRef(null)
-    const [isInView, setIsInView] = useState(false)
+// const useElementOnScreen = (options: object, containerRef: any) => {
+//     // const containerRef = useRef(null)
+//     const [isInView, setIsInView] = useState(false)
 
-    const callbackFunction = (entries: any) => {
-        const [entry] = entries;
-        setIsInView(entry.isIntersecting);
-    }
+//     const callbackFunction = (entries: any) => {
+//         const [entry] = entries;
+//         setIsInView(entry.isIntersecting);
+//     }
 
-    useEffect(() => {
+//     useEffect(() => {
 
-        const observer = new IntersectionObserver(callbackFunction, options)
-        if (containerRef.current) observer.observe(containerRef.current)
+//         const observer = new IntersectionObserver(callbackFunction, options)
+//         if (containerRef.current) observer.observe(containerRef.current)
 
-        return () => {
-            if (containerRef.current) observer.unobserve(containerRef.current)
-        }
-    }, [containerRef, options])
+//         return () => {
+//             if (containerRef.current) observer.unobserve(containerRef.current)
+//         }
+//     }, [containerRef, options])
 
-    return [isInView]
-}
+//     return [isInView]
+// }
 
 interface Props {
     list: any;
@@ -33,13 +33,13 @@ interface Props {
     currentLineStart: number;
     lineProgress: number;
     textFieldRef: any;
-    setBlink: Function
 }
 
-const HtmlEditor: FC<Props> = ({ list, setList, hideLines, onChangeWords, currentLineStart, lineProgress, setVideoPlaying, textFieldRef, setBlink }) => {
+const HtmlEditor: FC<Props> = ({ list, setList, hideLines, onChangeWords, currentLineStart, lineProgress, setVideoPlaying, textFieldRef }) => {
 
     const [currentWordId, setCurrentWordId] = useState(0);
     const [isVisible, setIsVisible] = useState(true);
+    const [helperBackgroundAlert, setHelperBackgroundAlert] = useState(false);
 
     const rootRef = createRef<HTMLDivElement>();
     const currentWordRef = useRef<any>({
@@ -51,26 +51,66 @@ const HtmlEditor: FC<Props> = ({ list, setList, hideLines, onChangeWords, curren
     });
     const helperRef = useRef(null);
 
-    // --------------------
-    const [isInView] = useElementOnScreen({
+    // ----------------------------------
+    // const containerRef = useRef(null)
+    const [isInView, setIsInView] = useState(false)
+
+    const callbackFunction = (entries: any) => {
+        const [entry] = entries
+        setIsInView(entry.isIntersecting);
+        console.log("entry: ", entry);
+    }
+    const options = {
         root: textFieldRef.current,
-        rootMargin: "0px",
+        rootMargin: "30px",
         threshold: 1.0
-    }, currentWordRef)
+    }
+
+    useEffect(() => {
+
+        const observer = new IntersectionObserver(callbackFunction, options)
+        if (currentWordRef.current) observer.observe(currentWordRef.current)
+
+        console.log("typeof(currentWordRef): ", typeof (currentWordRef), currentWordRef)
+
+        return () => {
+            if (currentWordRef.current) observer.unobserve(currentWordRef.current)
+        }
+    }, [currentWordRef, options])
 
     useEffect(() => {
         console.log(isInView);
-        console.log(textFieldRef);
         if (!isInView) {
-            setBlink(true);
+            setHelperBackgroundAlert(true);
         } else if (isInView) {
             setTimeout(() => {
-                setBlink(false);
+                setHelperBackgroundAlert(false);
             }, 500)
         }
     }, [isInView])
+    //   ----------------------------------
 
-    // --------------------
+    // // --------------------
+    // const [isInView] = useElementOnScreen({
+    //     root: textFieldRef.current,
+    //     rootMargin: "0px",
+    //     threshold: 1.0
+    // }, currentWordRef)
+
+    // useEffect(() => {
+    //     console.log(isInView);
+    //     console.log("currentWordRef: ", currentWordRef);
+    //     console.log("textFieldRef: ", textFieldRef);
+    //     if (!isInView) {
+    //         setHelperBackgroundAlert(true);
+    //     } else if (isInView) {
+    //         setTimeout(() => {
+    //             setHelperBackgroundAlert(false);
+    //         }, 500)
+    //     }
+    // }, [isInView])
+
+    // // --------------------
 
     const handleSortableChange = () => onChangeWords(rootRef.current?.innerText.split(/[\n\r]/g) ?? []);
 
@@ -119,7 +159,7 @@ const HtmlEditor: FC<Props> = ({ list, setList, hideLines, onChangeWords, curren
         >
             <span
                 style={{
-                    background: '#E8F1F6',
+                    background: `${helperBackgroundAlert ? '#f87171' : '#E8F1F6'}`,
                     // background: '#F5FAFE',
                     width: `${currentWordRef.current.offsetWidth}px`,
                     left: `${currentWordRef.current.offsetLeft}px`,

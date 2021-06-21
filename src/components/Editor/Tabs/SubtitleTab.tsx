@@ -23,7 +23,6 @@ const SubtitleEditor: FC<Props> = (props) => {
     const [hideLines, setHideLines] = useState(false);
     const [replaceWord, setReplaceWord] = useState('');
     const [replace, setReplace] = useState('');
-    const [blink, setBlink] = useState(false);
 
     const textFieldRef = useRef(null);
 
@@ -120,7 +119,7 @@ const SubtitleEditor: FC<Props> = (props) => {
         <div className="p-2 mt-5 min-h-96 2xl:grid 2xl:grid-cols-2 gap-6">
             <div
                 className={`
-                    w-full max-w-full h-full max-h-80 overflow-y-scroll shadow-md rounded-xl transition-colors ${blink ? 'bg-red-400' : 'bg-bg-3'} py-6 px-6
+                    w-full max-w-full h-full max-h-80 overflow-y-scroll shadow-md rounded-xl transition-colors bg-bg-3 py-6 px-6
                     ${hideLines && 'hideLines'}
                 `}
                 ref={textFieldRef}
@@ -135,7 +134,6 @@ const SubtitleEditor: FC<Props> = (props) => {
                         lineProgress={lineProgress}
                         setVideoPlaying={setVideoPlaying}
                         textFieldRef={textFieldRef}
-                        setBlink={setBlink}
                     />
                 )}
             </div>
