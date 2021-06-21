@@ -9,8 +9,8 @@ import { autobind } from 'core-decorators';
 
 interface ISubtitlePreviewProps {
     start: number;
-    setCurrentLineStart: ( x: number ) => void;
-    setLineProgress: ( x: number ) => void;
+    setCurrentLineStart: (x: number) => void;
+    setLineProgress: (x: number) => void;
 
     // Injected props
     subtitles: NodeList;
@@ -58,6 +58,12 @@ class SubtitlePreview extends React.PureComponent<ISubtitlePreviewProps, ISubtit
         const subtitleLineText = karaokeStyle?.active
             ? this.getKaraokeStyledText(subtitleNode, startTimeMilliseconds, karaokeStyle.fontColor)
             : subtitleNode.data.text;
+
+        // How long is the current line already shown
+        const currentSubtitleLinePlayTime = Math.max(startTimeMilliseconds - subtitleNode.data.start, 0);
+
+        this.updatePropsCurrentLineStart(subtitleNode.data.start);
+        this.updatePropsLineProgress(currentSubtitleLinePlayTime);
 
         return (
             <div
@@ -114,13 +120,10 @@ class SubtitlePreview extends React.PureComponent<ISubtitlePreviewProps, ISubtit
         // How long is the current line already shown
         const currentSubtitleLinePlayTime = Math.max(startTime - subtitleNode.data.start, 0);
 
-        this.updatePropsCurrentLineStart(subtitleNode.data.start);
-        this.updatePropsLineProgress(currentSubtitleLinePlayTime);
-        
         // Calculate how long each word will be highlighted
         const subtitleDuration = subtitleNode.data.end - subtitleNode.data.start;
         const highlightDuration = subtitleDuration / amountWords;
-        
+
         // Calculate the current highlighted index based on the playtime
         const highlightedIndex = Math.max(Math.floor(currentSubtitleLinePlayTime / highlightDuration) - 1, 0);
 
@@ -131,15 +134,15 @@ class SubtitlePreview extends React.PureComponent<ISubtitlePreviewProps, ISubtit
                     className={styles.smoothHighlightParent}
                 >
                     {words[highlightedIndex]}
-                        <span
-                            style={{
-                                color: fontColor,
-                                animationDuration: `${highlightDuration}ms`
-                            }}
-                            className={styles.smoothHighlightChild}
-                        >
-                            {words[highlightedIndex]}
-                        </span>
+                    <span
+                        style={{
+                            color: fontColor,
+                            animationDuration: `${highlightDuration}ms`
+                        }}
+                        className={styles.smoothHighlightChild}
+                    >
+                        {words[highlightedIndex]}
+                    </span>
                 </span>
             </>
         );
@@ -148,7 +151,7 @@ class SubtitlePreview extends React.PureComponent<ISubtitlePreviewProps, ISubtit
         for (let index = 0; index < highlightedIndex; index++) {
             words[index] = (
                 <>
-                    <span 
+                    <span
                         style={{
                             color: fontColor,
                         }}
