@@ -49,7 +49,7 @@ const HtmlEditor: FC<Props> = ({ list, setList, hideLines, onChangeWords, curren
             offsetWidth: 0
         }
     });
-    const helperRef = useRef<Element>(null);
+    const helperRef = useRef<HTMLSpanElement>(null);
 
     // ----------------------------------
     // const containerRef = useRef(null)
