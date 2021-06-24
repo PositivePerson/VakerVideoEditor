@@ -1,4 +1,4 @@
-import React, { createRef, FC, MutableRefObject, useEffect, useRef, useState } from 'react';
+import React, { createRef, FC, useEffect, useRef, useState } from 'react';
 
 import { ReactSortable } from 'react-sortablejs';
 
@@ -49,7 +49,7 @@ const HtmlEditor: FC<Props> = ({ list, setList, hideLines, onChangeWords, curren
             offsetWidth: 0
         }
     });
-    const helperRef = useRef(null);
+    const helperRef = useRef<Element>(null);
 
     // ----------------------------------
     // const containerRef = useRef(null)
@@ -58,7 +58,7 @@ const HtmlEditor: FC<Props> = ({ list, setList, hideLines, onChangeWords, curren
     const callbackFunction = (entries: any) => {
         const [entry] = entries
         setIsInView(entry.isIntersecting);
-        console.log("entry: ", entry);
+        console.log("entries: ", entries);
     }
     const options = {
         root: textFieldRef.current,
@@ -69,14 +69,14 @@ const HtmlEditor: FC<Props> = ({ list, setList, hideLines, onChangeWords, curren
     useEffect(() => {
 
         const observer = new IntersectionObserver(callbackFunction, options)
-        if (currentWordRef.current) observer.observe(currentWordRef.current)
+        if (helperRef.current) observer.observe(helperRef.current)
 
-        console.log("typeof(currentWordRef): ", typeof (currentWordRef), currentWordRef)
+        console.log("typeof(helperRef): ", typeof (helperRef), helperRef)
 
         return () => {
-            if (currentWordRef.current) observer.unobserve(currentWordRef.current)
+            if (helperRef.current) observer.unobserve(helperRef.current)
         }
-    }, [currentWordRef, options])
+    }, [helperRef, options])
 
     useEffect(() => {
         console.log(isInView);
@@ -85,7 +85,7 @@ const HtmlEditor: FC<Props> = ({ list, setList, hideLines, onChangeWords, curren
         } else if (isInView) {
             setTimeout(() => {
                 setHelperBackgroundAlert(false);
-            }, 500)
+            }, 1000)
         }
     }, [isInView])
     //   ----------------------------------
@@ -168,7 +168,7 @@ const HtmlEditor: FC<Props> = ({ list, setList, hideLines, onChangeWords, curren
                     // position: 'absolute',
                     // transition: 'all 100ms'
                 }}
-                className={`transition-all duration-500 h-6 absolute rounded z-0 ${isVisible ? '' : 'opacity-0'}`}
+                className={`transition-all duration-300 h-6 absolute rounded z-0 ${isVisible ? '' : 'opacity-0'}`}
                 ref={helperRef}
             />
             <ReactSortable
@@ -186,6 +186,7 @@ const HtmlEditor: FC<Props> = ({ list, setList, hideLines, onChangeWords, curren
                         //         (item?.Offset/10000 < currentLineStart + lineProgress) && (item?.Offset/10000 + item?.Duration/10000 > currentLineStart + lineProgress))
                         //         && item?.type !== 'spacer' ? currentWordRef : null}
                         ref={item.id === currentWordId ? currentWordRef : null}
+                        // ref={item.id === currentWordId ? helperRef : null}
                         // style={item?.type === 'spacer' ? {
                         //     width: '3px',
                         // } : undefined
